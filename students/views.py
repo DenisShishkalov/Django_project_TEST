@@ -1,6 +1,21 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+from students.models import Student, MyModel
+from django.views.generic.edit import CreateView
+from django.views.generic import ListView
 
-from students.models import Student
+
+class MyModelListView(ListView):
+    model = MyModel
+    template_name = 'students/mymodel_list.html'
+    context_object_name = 'mymodels'
+
+
+class MyModelCreateView(CreateView):
+    model = MyModel
+    fields = ['name', 'description']
+    template_name = 'students/mymodel_form.html'
+    success_url = reverse_lazy('mymodel_list')
 
 
 def example_data(request):
@@ -34,8 +49,8 @@ def index(request):
     return render(request, 'students/index.html', context=context)
 
 
-def student_detail(request, student):
-    student = Student.objects.get(id=1)
+def student_detail(request, student_id):
+    student = Student.objects.get(id=student_id)
     context = {
         'student': student,
     }
@@ -48,3 +63,5 @@ def student_list(request):
     'students': student_list
     }
     return render(request, 'students/student_list.html', context=context)
+
+
